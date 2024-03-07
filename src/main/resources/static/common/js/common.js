@@ -85,7 +85,7 @@ commonLib.ajaxLoad = function(method, url, params, responseType) {
     method = !method || !method.trim()? "GET" : method.toUpperCase();
 
 
-    //토큰, 토큰헤더 가져오기
+    //토큰, 토큰헤더 가져오기 - 수정
     const token = document.querySelector("meta[name='_csrf']").content;
     const header = document.querySelector("meta[name='_csrf_header']").content;
 

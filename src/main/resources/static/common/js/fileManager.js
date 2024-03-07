@@ -28,7 +28,18 @@ commonLib.fileManager = {
             //ajaxLoad 함수 (속성명)만 분리 - 비구조할당
             const {ajaxLoad} = commonLib;
             //post 방식 / 요청 주소 / 요청데이터 formData / 응답은 JSON
-            ajaxLoad("POST", "/api/file", formData, "json");
+            ajaxLoad("POST", "/api/file", formData, "json")
+                .then(res => { //요청 성공시 promise방식은 then으로 받음
+
+                    if(res && res.success){ //파일 업로드 성공시
+                        if(typeof parent.callbackFileUpload == 'function'){
+                            parent.callbackFileUpload(res.data);
+                        }
+                    }
+
+                })
+                .catch(err => console.error(err)); //요청 실패시
+ &
 
             //2. 서버에 전송!!
 

@@ -84,6 +84,7 @@ commonLib.loadEditor = function(id, height) { //매개변수로 id, 높이
 commonLib.ajaxLoad = function(method, url, params, responseType) {
     method = !method || !method.trim()? "GET" : method.toUpperCase();
 
+
     //토큰, 토큰헤더 가져오기
     const token = document.querySelector("meta[name='_csrf']").content;
     const header = document.querySelector("meta[name='_csrf_header']").content;

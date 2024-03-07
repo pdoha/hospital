@@ -22,7 +22,13 @@ commonLib.fileManager = {
 
             //파일 복수개 => 반복
             for(const file of files){
+                formData.append("file", file);
             }
+
+            //ajaxLoad 함수 (속성명)만 분리 - 비구조할당
+            const {ajaxLoad} = commonLib;
+            //post 방식 / 요청 주소 / 요청데이터 formData / 응답은 JSON
+            ajaxLoad("POST", "/api/file", formData, "json");
 
             //2. 서버에 전송!!
 
@@ -57,7 +63,7 @@ commonLib.fileManager = {
     fileEl.addEventListener("change", function(e)){
         commonLib.fileManager.upload(e.target.files);
 
-    }
+    });
 
  });
 

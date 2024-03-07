@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <!--설명추가-->
+    <meta th:if="${siteConfig.siteDescription != null}" name="description"
+          th:content="${siteConfig.siteDescription}">
+    <!--키워드 추가-->
+    <meta th:if="${siteConfig.siteKeywords != null}" name="keywords"
+          th:content="${siteConfig.siteKeywords}">
+    <title>
+        <th:block th:if="${pageTitle != null}" th:text="${pageTitle + ' - '}"></th:block>
+        <th:block th:if="${siteConfig.siteTitle != null}" th:text="${siteConfig.siteTitle}"></th:block>
+    </title>
+    <!--아이콘 이미지 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+    <!--css-->
+    <th:block layout:fragment="addCommonCss"></th:block>
+    <link rel="stylesheet" href="text/css" th:href="@{/common/css/style.css?v={v}(v=${siteConfig.cssJsVersion})}">
+    <link rel="stylesheet" href="text/css"
+          th:each="cssFile : ${addCommonCss}"
+          th:href="@{/common/css/{file}.css?v={v}(file=${cssFile}, v=${siteConfig.cssJsVersion})}">
+
+    <link rel="stylesheet" href="text/css" th:href="@{/mobile/css/style.css?v={v}(v=${siteConfig.cssJsVersion})}">
+    <link rel="stylesheet" href="text/css"
+          th:each="cssFile : ${addCss}"
+          th:href="@{/mobile/css/{file}.css?v={v}(file=${cssFile}, v=${siteConfig.cssJsVersion})}">
+
+    <th:block layout:fragment="addCss"></th:block>
+
+    <!--js-->
+    <th:block layout:fragment="addCommonScript"></th:block>
+
+    <script th:src="@{/common/js/common.js?v={v}(v=${siteConfig.cssJsVersion})}"></script>
+    <script th:each="jsFile : ${addCommonScript}"
+            th:src="@{/common/js/{file}.js?v={v}(file=${jsFile}, v=${siteConfig.cssJsVersion})}"></script>
+
+
+    <script th:src="@{/mobile/js/common.js?v={v}(v=${siteConfig.cssJsVersion})}"></script>
+    <script th:each="jsFile : ${addScript}"
+            th:src="@{/mobile/js/{file}}.js?v={v}(file=${jsFile}, v=${siteConfig.cssJsVersion})}"></script>
+
+    <th:block layout:fragment="addScript"></th:block>
+</head>
+<body>
+    <header th:replace="~{mobile/outlines/header::common}"></header>
+    <main layout:fragment="content"></main>
+    <footer th:replace="~{mobile/outlines/footer::common}"></footer>
+</body>
+
+</html>

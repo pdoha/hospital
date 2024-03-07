@@ -1,0 +1,6 @@
+/* 여백 공통 */
+.mb30 { margin-bottom: 30px; }
+
+
+/* 위지윅 에디터 공통 */
+.ck-editor__editable { min-height: 300px; }

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <nav class="submenus" th:fragment="submenus"
+         th:if="${subMenus != null && !subMenus.isEmpty()}">
+        <!--서브 메뉴가서 null값이 아니고 && 서브메뉴가 비어 있지 않을때 (요소가있을떄)만 노출-->
+        <!--url 자체가 변수고 받아와서 교체-->
+
+        <a th:each="menu : ${subMenus}" th:object="${menu}"
+            th:href="@{{url}(url=*{url})}" th:text="*{name}"
+            th:classappend="${subMenuCode == menu.code} ? 'on'">
+        </a>
+    </nav>
+</html>

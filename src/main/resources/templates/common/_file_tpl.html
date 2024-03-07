@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<script type="text/html" id="image1_tpl" th:fragment="image1_tpl">
+    <div class="image1_tpl_box" id="file_[seq]">
+        <!--삭제버튼-->
+        <a th:href="@{/file/delete/[seq]}" onclick="return confirm('정말 삭제하시겠습니까?');"
+           class="remove" target="ifrmProcess">
+            <i class="xi-close"></i>
+        </a>
+        <div class="inner" ></div>
+    </div>
+</script>
+
+<!--파일첨부할때 에디터가 없는 형태 (다운로드 & 삭제 기능만 추가)-->
+<script type="text/html" id="attach_tpl" th:fragment="attach_tpl">
+    <!--나열식 , 치환코드 [seq]-->
+    <span class="file_tpl_box" id="file_[seq]"> 
+        <!--파일명을 클릭하면 다운-->
+        <a th:href="@{/file/download/[seq]}">[fileName]</a>
+        <!--삭제버튼-->
+        <a th:href="@{/file/delete/[seq]}" onclick="return confirm('정말 삭제하시겠습니까?');"
+           class="remove" target="ifrmProcess">
+            <i class="xi-close"></i>
+        </a>
+    </span>
+</script>
+
+<!--에디터에 추가-->
+<script type="text/html" id="editor_tpl" th:fragment="editor_tpl">
+    <!--나열식 , 치환코드 [seq]-->
+    <span class="file_tpl_box" id="file_[seq]">
+        <!--파일명을 클릭하면 다운-->
+        <a th:href="@{/file/download/[seq]}">[fileName]</a>
+        <!--본문첨부 : insert 클래스를 추가-->
+        <!--참고할 수 있는 url도 필요함-->
+        <i class="xi-upload insert_image" data-url="[imageUrl]"></i>
+        <!--삭제버튼-->
+        <a th:href="@{/file/delete/[seq]}" onclick="return confirm('정말 삭제하시겠습니까?');"
+           class="remove" target="ifrmProcess">
+            <i class="xi-close"></i>
+        </a>
+    </span>
+</script>
+</html>

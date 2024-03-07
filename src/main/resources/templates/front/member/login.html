@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{front/layouts/main}">
+<main layout:fragment="content">
+    <h1 th:text="#{로그인}"></h1>
+    <form name="frmLogin" method="post" th:action="@{/member/login}" autocomplete="off">
+
+        <!--성공시 조회해서 이동할 수 있게 값이 없을때는 메인페이지로 이동-->
+        <!--널값이 아닐 때 ( 주소가 있을때 ) 값이 넘어오면 이값을 주소로 넘겨준다-->
+        <!--주소가 넘어오면 히든값으로 추가하고 (param 식객체를 통해)-->
+        <!--주문하다가 다른페이지가면 짜증나니까 다시 원래 페이지로 양식 유지시킨것! -->
+        <input type="hidden" name="redirectURL"
+               th:if="${param.redirectURL != null}" th:value="${param.redirectURL}">
+        <!--//스프링 시큐리티가 처리하므로 주소만 알려주면됨-->
+        <dl>
+            <dt th:text="#{아이디}"></dt>
+            <dd>
+                <input type="text" name="userId">
+            </dd>
+        </dl>
+
+        <dl>
+            <dt th:text="#{비밀번호}"></dt>
+            <dd>
+                <input type="password" name="password">
+            </dd>
+        </dl>
+        <button type="submit" th:text="#{로그인}"></button>
+
+        <div class="error" th:if="${session.Global_error != null}" th:text="${session.Global_error}"></div>
+    </form>
+</main>
+</html>

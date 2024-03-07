@@ -14,6 +14,24 @@ commonLib.fileManager = {
             if(!gidEl || !gidEl.value.trim()) {
                 throw new Error("gid가 누락되었습니다.");
 
+            //1. 양식 만들기!!
+            const gid = gidEl.value.trim();
+            //생성자 객체 생성 (메모리상의 양식데이터를 만들기위한)
+            const formData = new FormData(); //기본 Content-Type: multipart/form-data
+            formData.append("gid", gid); //항목 추가 (key & value)
+
+            //파일 복수개 => 반복
+            for(const file of files){
+                formData.append("file", file);
+            }
+
+            //ajaxLoad 함수 (속성명)만 분리 - 비구조할당
+            const {ajaxLoad} = commonLib;
+            //post 방식 / 요청 주소 / 요청데이터 formData / 응답은 JSON
+            ajaxLoad("POST", "/api/file", formData, "json");
+
+            //2. 서버에 전송!!
+
         } catch (err){
             alert(err.message);
             console.error(err);
@@ -45,7 +63,7 @@ commonLib.fileManager = {
     fileEl.addEventListener("change", function(e)){
         commonLib.fileManager.upload(e.target.files);
 
-    }
+    });
 
  });
 

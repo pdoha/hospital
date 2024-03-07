@@ -2,19 +2,25 @@ var commonLib = commonLib || {};
 
 /**
 * ajax 요청,응답 편의 함수
-*
-* @param method : 요청 방식 - GET, POST, PUT, PATCH, DELETE ...
-* @param url : 요청 URL
-* @param params : 요청 데이터(POST, PUT, PATCH ... )
-* @param responseType :  json : javascript 객체로 변환
+
+method : 요청 방식 - GET, POST, PUT, PATCH, DELETE ...
+url : 요청 URL
+params : 요청 데이터(POST, PUT, PATCH ... )
+responseType :  json : javascript 객체로 변환
 */
 commonLib.ajaxLoad = function(method, url, params, responseType) {
+    //메서드 없으면 get 기본 메서드,
     method = method || "GET";
+
+    //요청데이터 params이 없을때 null값
     params = params || null;
 
     const token = document.querySelector("meta[name='_csrf']").content;
     const tokenHeader = document.querySelector("meta[name='_csrf_header']").content;
 
+    //요청 promise 비동기 순차 실행 함수
+    //resolve : 성공시 데이터 넘김
+    //reject : 실패시 데이터 넘김
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
 
@@ -23,9 +29,13 @@ commonLib.ajaxLoad = function(method, url, params, responseType) {
 
         xhr.send(params); // 요청 body에 실릴 데이터 키=값&키=값& .... FormData 객체 (POST, PATCH, PUT)
 
+        //상태가 바뀔때마다 호출
         xhr.onreadystatechange = function() {
+            //요청 성공시 && 상태가 응답이 완료된 상태일때
             if (xhr.status == 200 && xhr.readyState == XMLHttpRequest.DONE) {
-                const resData = (responseType && responseType.toLowerCase() == 'json') ? JSON.parse(xhr.responseText) : xhr.responseText;
+                //타입이 있고 && 타입이 json과 같을때 변환 JSON.parse
+                const resData = (responseType && responseType.toLowerCase() == 'json') ?
+                JSON.parse(xhr.responseText) : xhr.responseText;
 
                 resolve(resData); // 성공시 응답 데이터
             }
@@ -73,14 +83,18 @@ commonLib.loadEditor = function(id, height) { //매개변수로 id, 높이
 */
 commonLib.ajaxLoad = function(method, url, params, responseType) {
     method = !method || !method.trim()? "GET" : method.toUpperCase();
+
+    //토큰, 토큰헤더 가져오기
     const token = document.querySelector("meta[name='_csrf']").content;
     const header = document.querySelector("meta[name='_csrf_header']").content;
+
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open(method, url);
-        xhr.setRequestHeader(header, token);
 
-        xhr.send(params);
+        xhr.setRequestHeader(header, token); //토큰
+
+        xhr.send(params); //요청bodu에 실릴 데이터 (키와값 . . .formData 객체
         responseType = responseType?responseType.toLowerCase():undefined;
         if (responseType == 'json') {
             xhr.responseType=responseType;

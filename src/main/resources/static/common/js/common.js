@@ -85,17 +85,18 @@ commonLib.ajaxLoad = function(method, url, params, responseType) {
     method = !method || !method.trim()? "GET" : method.toUpperCase();
 
 
-    //토큰, 토큰헤더 가져오기 - 수정
+    //토큰, 토큰헤더 가져오기
     const token = document.querySelector("meta[name='_csrf']").content;
     const header = document.querySelector("meta[name='_csrf_header']").content;
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => { //비동기식 순차 실행 Promise
         const xhr = new XMLHttpRequest();
         xhr.open(method, url);
+        xhr.send(params); //요청bodu에 실릴 데이터 (키와값 . . .formData 객체
 
         xhr.setRequestHeader(header, token); //토큰
 
-        xhr.send(params); //요청bodu에 실릴 데이터 (키와값 . . .formData 객체
+
         responseType = responseType?responseType.toLowerCase():undefined;
         if (responseType == 'json') {
             xhr.responseType=responseType;

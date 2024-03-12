@@ -59,7 +59,9 @@
         <dl>
             <dt th:text="#{프로필_이미지}"></dt>
             <dd>
-                <button type="button" class="upload_files" th:text="#{이미지_업로드}" data-image-only="true"></button>
+                <div id="profile_image"></div>
+                <button type="button" class="upload_files" th:text="#{이미지_업로드}"
+                        data-image-only="true" data-single-file="true"></button>
             </dd>
         </dl>
 
@@ -78,5 +80,7 @@
 
 
     </form>
+
+    <div th:replace="~{common/_file_tpl::image1_tpl}"></div>
 </main>
 </html>

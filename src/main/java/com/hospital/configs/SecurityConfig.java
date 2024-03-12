@@ -69,6 +69,7 @@ public class SecurityConfig {
 
             });
         });
+        http.headers(c -> c.frameOptions(f -> f.sameOrigin()));
         return http.build();
     }
 

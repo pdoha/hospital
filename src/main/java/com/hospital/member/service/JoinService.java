@@ -1,5 +1,6 @@
 package com.hospital.member.service;
 
+import com.hospital.file.service.FileUploadService;
 import com.hospital.member.Authority;
 import com.hospital.member.controllers.JoinValidator;
 import com.hospital.member.controllers.RequestJoin;
@@ -24,6 +25,7 @@ public class JoinService {
     private final JoinValidator validator; //검증추가
     private final PasswordEncoder encoder; //비밀번호 해시화
     private final AuthoritiesRepository authoritiesRepository; //권한부여
+    private final FileUploadService uploadService;
 
     //회원가입 처리
     //커맨드 객체 형태로 가입들어올 경우도 있음
@@ -59,6 +61,9 @@ public class JoinService {
         authorities.setAuthority(Authority.USER);
         authoritiesRepository.saveAndFlush(authorities);
         //-> 순환참조가 발생할 수 있음 (Member쪽에 tostring 출력 배제)
+
+        //파일 업로드 완료처리
+        uploadService.processDone(form.getGid());
 
 
     }

@@ -1,5 +1,7 @@
 package com.hospital.member.service;
 
+import com.hospital.file.entities.FileInfo;
+import com.hospital.file.service.FileInfoService;
 import com.hospital.member.entities.Authorities;
 import com.hospital.member.entities.Member;
 import com.hospital.member.repositories.MemberRepository;
@@ -18,6 +20,7 @@ public class MemberInfoService implements UserDetailsService {
 
     //DB에서도 조회할 수 있게 의존성 추가
     private final MemberRepository memberRepository;
+    private final FileInfoService fileInfoService; //프로필 이미지
     @Override
     public UserDetails loadUserByUsername(String username) throws
      UsernameNotFoundException {
@@ -38,6 +41,13 @@ public class MemberInfoService implements UserDetailsService {
         }
         //->가져왔던 데이터에서 상수만 뽑아서 반환값으로 문자열로 사용
         //편하게 쓰려고 SimpleGrantedAuthority 객체를 사용해서 권한만 문자열로 넣으면됨
+
+        //프로필 이미지 처리
+        //넘어온 데이터는 list 형태, 완료된것만 가져온다
+        List<FileInfo> files = fileInfoService.getListDone(member.getGid());
+        if(files != null && !files.isEmpty()){
+            member.setProfileImage(files.get(0));
+        }
 
         //userDetails 구현체로 반환
         return MemberInfo.builder()

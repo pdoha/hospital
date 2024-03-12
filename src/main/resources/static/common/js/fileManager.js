@@ -33,7 +33,9 @@ commonLib.fileManager = {
 
                     if(res && res.success){ //파일 업로드 성공시
                         if(typeof parent.callbackFileUpload == 'function'){
-                            parent.callbackFileUpload(res.data);
+                            parent.callbackFileUpload(res.data); //파일 업로드후 페이지마다 후속처리를 다르게하기 위한 콜백함수
+                        } else { //파일 업로드 실패시 메세지
+                            if(res) alert(res.message);
                         }
                     }
 

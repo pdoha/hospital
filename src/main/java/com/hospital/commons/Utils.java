@@ -145,6 +145,13 @@ public class Utils {
 
     }
 
+    //페이지 0이하 정수인 경우 1이상 정수로 대체하는 편의 기능
+    // replace : 교체할 값
+    public static int onlyPositiveNumber(int num, int replace){
+        //음수이면 교체값
+        return num < 1 ? replace : num;
+    }
+
 
 
 }

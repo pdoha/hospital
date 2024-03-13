@@ -3,6 +3,7 @@ package com.hospital.board.service.config;
 import com.hospital.admin.board.controllers.RequestBoardConfig;
 import com.hospital.board.entities.Board;
 import com.hospital.board.repositories.BoardRepository;
+import com.hospital.file.service.FileUploadService;
 import com.hospital.member.Authority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,8 @@ import org.springframework.util.StringUtils;
 public class BoardConfigSaveService {
 
     private final BoardRepository boardRepository;
-//    private final FileUploadService fileUploadService;
+    private final FileUploadService fileUploadService;
+
     public void save(RequestBoardConfig form){
 
         // bid, mode 불러와서
@@ -56,6 +58,6 @@ public class BoardConfigSaveService {
         boardRepository.saveAndFlush(board);
 
         //파일 업로드 완료처리 ( 파일 목록 유지)
-//      fileUploadService.processDone(board.getGid());
+        fileUploadService.processDone(board.getGid());
     }
 }

@@ -2,6 +2,7 @@ package com.hospital.admin.board.controllers;
 
 import com.hospital.admin.menus.Menu;
 import com.hospital.admin.menus.MenuDetail;
+import com.hospital.board.service.config.BoardConfigInfoService;
 import com.hospital.board.service.config.BoardConfigSaveService;
 import com.hospital.commons.ExceptionProcessor;
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ import java.util.List;
 public class BoardController implements ExceptionProcessor {
 
     private final BoardConfigSaveService configSaveService;
+    private final BoardConfigInfoService configInfoService;
     private final BoardConfigValidator configValidator;
 
     //주메뉴 코드
@@ -49,9 +51,12 @@ public class BoardController implements ExceptionProcessor {
         return "admin/board/add";
     }
 
-    @GetMapping("/adit/{bid}")
+    @GetMapping("/edit/{bid}")
     public String edit(@PathVariable("bid") String bid, Model model){
         commonProcess("edit", model);
+
+        RequestBoardConfig form = configInfoService.getForm(bid); //커맨객체로 변환해서 가져옴
+        model.addAttribute("requestBoardConfig", form);
 
         return "admin/board/edit";
     }
@@ -61,11 +66,13 @@ public class BoardController implements ExceptionProcessor {
     public String save(@Valid RequestBoardConfig config, Errors errors, Model model){
         String mode = config.getMode();
 
-        commonProcess("mode", model);
+        commonProcess(mode, model);
 
         configValidator.validate(config, errors);
         //에러있으면 처리안한다
         if(errors.hasErrors()){
+//            System.out.println("--- 에러 -----");
+//            errors.getAllErrors().stream().forEach(System.out::println);
             return "admin/board/" + mode;
         }
 

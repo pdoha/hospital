@@ -1,8 +1,11 @@
 package com.hospital.admin.board.controllers;
 
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import com.hospital.file.entities.FileInfo;
 
+import java.util.List;
 import java.util.UUID;
 @Data
 public class RequestBoardConfig {
@@ -33,4 +36,10 @@ public class RequestBoardConfig {
     private String commentAccessType = "ALL"; //권한 설정 - 댓글
     private String htmlTop; //게시판 상단 HTML
     private String htmlBottom; //게시판 하단 HTML
+
+    @Transient
+    private List<FileInfo> htmlTopImages; //게시판 상단 Top 이미지
+
+    @Transient
+    private List<FileInfo> htmlBottomImages; //게시판 상단 Bottom 이미지
 }

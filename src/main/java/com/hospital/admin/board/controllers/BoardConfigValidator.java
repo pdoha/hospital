@@ -27,8 +27,12 @@ public class BoardConfigValidator implements Validator {
 
         //게시판 아이디 하나 가져와서
         String bid = form.getBid();
+        //게시판 아디는 기본키로
+        // 중복되면안되고 추가될때만 필요함
+        //수정할때는 필요없으니까 add모드일때만 중복체크
+        String mode = StringUtils.hasText(form.getMode()) ? form.getMode() : "add";
         //있을때 중복되는지 체크
-        if(StringUtils.hasText(bid) && boardRepository.existsById(bid)){
+        if(StringUtils.hasText(bid) && mode.equals("add") && boardRepository.existsById(bid)){
             errors.rejectValue("bid", "Duplicated");
         }
 

@@ -19,6 +19,7 @@ public class MemberInfo implements UserDetails {
     private String password;
     private Member member;
 
+
     //권한 (인가)
     //마이페이지 -> 로그인한 사람만 / 관리자페이지는 관리자 권한이 있는 사람만
     //GrantedAuthority 의 하위 클래스가 전부 가능하니까 <?   >
@@ -67,4 +68,6 @@ public class MemberInfo implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

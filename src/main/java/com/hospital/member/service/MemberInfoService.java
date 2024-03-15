@@ -99,6 +99,7 @@ public class MemberInfoService implements UserDetailsService {
         //페이징 처리
         //검색 조건에 따라서 개수가 달라지므로 조건식 Predicate
         int total = (int)memberRepository.count(andBuilder); //총 레코드 개수
+
         Pagination pagination = new Pagination(page, total, 10, limit, request);
 
         return new ListData<>(items, pagination);

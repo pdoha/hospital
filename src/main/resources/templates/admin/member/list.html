@@ -3,6 +3,8 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{admin/layouts/main}">
 <section layout:fragment="content">
+<!--    페이징 번호-->
+    <th:block th:replace="~{common/_pagination::pagination}"></th:block>
 
 
 </section>

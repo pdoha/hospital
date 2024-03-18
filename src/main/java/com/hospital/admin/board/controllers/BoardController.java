@@ -2,9 +2,12 @@ package com.hospital.admin.board.controllers;
 
 import com.hospital.admin.menus.Menu;
 import com.hospital.admin.menus.MenuDetail;
+import com.hospital.board.entities.Board;
 import com.hospital.board.service.config.BoardConfigInfoService;
 import com.hospital.board.service.config.BoardConfigSaveService;
 import com.hospital.commons.ExceptionProcessor;
+import com.hospital.commons.ListData;
+import com.hospital.commons.Pagination;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -39,9 +42,38 @@ public class BoardController implements ExceptionProcessor {
 
     //게시판 목록
     @GetMapping
-    public String list(Model model){
+    public String list(@ModelAttribute BoardSearch search, Model model){
         commonProcess("list", model);
+
+        ListData<Board> data = configInfoService.getList(search);
+
+        List<Board> items = data.getItems(); //목록
+        Pagination pagination = data.getPagination(); //페이징
+
+        model.addAttribute("items", items);
+        model.addAttribute("pagination", pagination);
+
         return "admin/board/list";
+    }
+
+    //목록 수정
+    @PatchMapping
+    public String editList(@RequestParam("chk") List<Integer> chks, Model model ){
+        commonProcess("list", model);
+
+        configSaveService.saveList(chks);
+
+        model.addAttribute("script", "parent.location.reload()");
+
+        return "common/_execute_script";
+    }
+
+    @DeleteMapping
+    //목록삭제
+    public String deleteList(@RequestParam("chk") List<Integer> chks, Model model){
+        commonProcess("list", model);
+
+        return "common/_execute_script";
     }
 
     //게시판 등록
@@ -107,7 +139,7 @@ public class BoardController implements ExceptionProcessor {
 
         //공통
 
-
+        List<String> addCss = new ArrayList<>();
         //양식에 필요한 스크립트 ( 게시판 등록, 수정에 다 필요하니까 form)
         List<String> addScript = new ArrayList<>();
 
@@ -126,6 +158,7 @@ public class BoardController implements ExceptionProcessor {
         model.addAttribute("subMenuCode", mode); //서브메뉴코드는 모드값과 동일하게
         model.addAttribute("addCommonScript", addCommonScript);
         model.addAttribute("addScript", addScript);
+        model.addAttribute("addCss", addCss);
 
     }
 }

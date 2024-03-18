@@ -152,6 +152,17 @@ public class Utils {
         return num < 1 ? replace : num;
     }
 
+    //요청 데이터 단일 조회 편의 함수
+    public String getParam(String name){
+        return request.getParameter(name);
+    }
+
+    //active같은 복수개 조회 편의 함수
+    public String[] getParams(String name){
+        return request.getParameterValues(name);
+    }
+
+
 
 
 }

@@ -10,6 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ListData<T> {
-    private List<T> items;
-    private Pagination pagination;
+    private List<T> items; //목록
+    private Pagination pagination; //페이징
 }

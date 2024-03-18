@@ -184,7 +184,35 @@ h1 {
            font-weight: normal;
 }
 
+.table_rows {
+           border-spacing: 0;
+           width: 100%;
+           background: #fff;
+}
+.table_rows thead th {
+           background: #596b99;
+           color: #fff;
+           font-weight: normal;
+           padding: 7px 10px;
+}
+.table_rows thead th + th {
+           border-left: 1px solid #fff;
+}
+
+.table_rows tbody td {
+           border-bottom: 1px solid #ccc;
+           padding: 7px 10px;
+}
+
+.table_actions {
+           background: #fff;
+           padding: 7px 10px;
+           border-bottom: 1px solid #ccc;
+}
 /* 테이블 공통 E */
+
+
+
 
  /* 입력 공통 S */
  input[type='text'],
@@ -239,6 +267,27 @@ select{
            background: #222;
            color: #fff;
  }
+
+ .search_btn {
+           text-align: center;
+            margin: 20px 0 30px;
+ }
+ .search_btn .btn  {
+           display: inline-block;
+           min-width: 200px;
+           text-align: center;
+           font-size: 1.4rem;
+           font-weight: 500;
+           height: 45px;
+           line-height: 45px;
+           background: #596b99;
+           color: #fff;
+           cursor: pointer;
+           border-radius: 3px;
+           border: 0;
+ }
+
+
 
 .sbtn {
            border: 1px solid #222;
@@ -337,3 +386,13 @@ sbtn:hover i, .sbtn.on i {
   .file_tpl_box i { padding: 0 5px; cursor: pointer; }
 
   /* 파일 공통 E */
+
+  /* 입력 항목 그룹화 */
+  .input_grp {
+            display:flex;
+            align-items: center;
+  }
+
+  .input_grp > * + *{ /* 하위항목중 첫번째꺼 제외하고 적용 */
+            margin-left: 3px;
+  }

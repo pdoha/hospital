@@ -1,15 +1,30 @@
 package com.hospital.board.service.config;
 
+import com.hospital.admin.board.controllers.BoardSearch;
 import com.hospital.admin.board.controllers.RequestBoardConfig;
 import com.hospital.board.entities.Board;
+import com.hospital.board.entities.QBoard;
 import com.hospital.board.repositories.BoardRepository;
+import com.hospital.commons.ListData;
+import com.hospital.commons.Pagination;
+import com.hospital.commons.Utils;
 import com.hospital.file.entities.FileInfo;
 import com.hospital.file.service.FileInfoService;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
+
+import static org.springframework.data.domain.Sort.Order.desc;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +32,7 @@ import java.util.List;
 public class BoardConfigInfoService {
     private final BoardRepository boardRepository;
     private final FileInfoService fileInfoService;
+    private final HttpServletRequest request;
 
     //개별조회
     public Board get(String bid){
@@ -57,7 +73,65 @@ public class BoardConfigInfoService {
     }
 
     //게시판 설정 목록
-//    public ListData<Board> getList(BoardSearch search){
-//        int page =Utils.onlyPosition search.getPage();
-//    }
+    public ListData<Board> getList(BoardSearch search){
+        int page = Utils.onlyPositiveNumber(search.getPage(), 1);
+        int limit = Utils.onlyPositiveNumber(search.getLimit(), 20);
+
+        QBoard board = QBoard.board;
+        BooleanBuilder andBuilder = new BooleanBuilder();
+
+
+        /* 검색 조건 처리 S */
+        String bid = search.getBid(); //bid 가져오기
+        String bName = search.getBName(); //게시판 명
+
+        String sopt = search.getSopt(); //기본값 넣어준다
+        //ALL = 게시판아이디와 이름 조합해서 키워드 검색
+        sopt = StringUtils.hasText(sopt) ? sopt.trim() : "ALL";
+        String skey = search.getSkey(); //키워드 검색
+
+        if(StringUtils.hasText(bid)){
+            //게시판 아이디 조회
+            andBuilder.and(board.bid.contains(bid.trim()));
+        }
+
+        if(StringUtils.hasText(bName)){
+            //게시판명 조회
+            andBuilder.and(board.bName.contains(bName.trim()));
+        }
+
+        //두개 조합해서 키워드 검색
+        if(StringUtils.hasText(skey)){
+            skey = skey.trim();
+
+            BooleanExpression cond1 = board.bid.contains(skey);
+            BooleanExpression cond2 = board.bName.contains(skey);
+
+            if(sopt.equals("bid")){
+                andBuilder.and(cond1);
+
+            }else if(sopt.equals("bName")){
+                andBuilder.and(cond2);
+
+            } else{ //통합검색 : bid + bName
+                BooleanBuilder orBuilder = new BooleanBuilder();
+                orBuilder.or(cond1)
+                        .or(cond2);
+                andBuilder.and(orBuilder);
+            }
+
+        }
+
+
+        /* 검색 조건 처리 E */
+
+        //페이지번호가 0부터 시작해서 -1, 등록순대로
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(desc("createdAt")));
+        Page<Board> data = boardRepository.findAll(andBuilder, pageable); //페이징 관련 정보가 담겨있음
+
+        //pagination 객체 생성
+        Pagination pagination = new Pagination(page, (int)data.getTotalElements(), limit, 10, request);
+
+        return new ListData<>(data.getContent(), pagination);
+    }
 }

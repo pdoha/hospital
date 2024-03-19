@@ -4,14 +4,17 @@ import com.hospital.board.entities.Board;
 import com.hospital.board.service.config.BoardConfigInfoService;
 import com.hospital.commons.ExceptionProcessor;
 import com.hospital.commons.Utils;
+import com.hospital.file.entities.FileInfo;
+import com.hospital.file.service.FileInfoService;
+import com.hospital.member.MemberUtil;
+import com.hospital.member.entities.Member;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +25,11 @@ import java.util.List;
 public class BoardController implements ExceptionProcessor {
     private final BoardConfigInfoService configInfoService;
     private final Utils utils;
+    private final MemberUtil memberUtil;
     private Board board;
+
+    private final FileInfoService  fileInfoService;
+    private final BoardFormValidator boardFormValidator;
 
     //게시판 목록
     @GetMapping("/list/{bid}")
@@ -44,8 +51,14 @@ public class BoardController implements ExceptionProcessor {
 
     //게시글 쓰기
     @GetMapping("/write/{bid}")
-    public String write(@PathVariable("bid") String bid, Model model){
+    public String write(@PathVariable("bid") String bid,@ModelAttribute RequestBoard form,  Model model){
         commonProcess(bid, "write", model);
+
+        //작성시 비회원이면
+        if(memberUtil.isLogin()){
+            Member member = memberUtil.getMember();
+            form.setPoster(member.getName()); //작성자랑 회원이랑 일치하면
+        }
 
         return utils.tpl("board/write");
     }
@@ -60,9 +73,28 @@ public class BoardController implements ExceptionProcessor {
 
     //게시글 등록 & 수정
     @PostMapping("/save")
-    public String save(Model model){
+    public String save(@Valid RequestBoard form, Errors errors, Model model){
+
+        BoardFormValidator.validator(form, errors);
+
+        //에러가 있으면
+        if(errors.hasErrors()){
+            String gid = form.getGid();
+
+            List<FileInfo> editorFiles = fileInfoService.getList(gid, "editor");
+            List<FileInfo> attachFiles = fileInfoService.getList(gid, "attach");
+
+
+        }
 
         return null;
+    }
+
+    //비회원 글수정, 글삭제 비밀번호 확인
+    @PostMapping("/password")
+    public String passwordCheck(@RequestParam(name="password", required = false) String password, Model model){
+
+        return "common/_execute_script";
     }
 
 

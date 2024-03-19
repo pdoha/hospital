@@ -3,6 +3,7 @@ package com.hospital.admin.board.controllers;
 import com.hospital.admin.menus.Menu;
 import com.hospital.admin.menus.MenuDetail;
 import com.hospital.board.entities.Board;
+import com.hospital.board.service.config.BoardConfigDeleteService;
 import com.hospital.board.service.config.BoardConfigInfoService;
 import com.hospital.board.service.config.BoardConfigSaveService;
 import com.hospital.commons.ExceptionProcessor;
@@ -27,6 +28,7 @@ public class BoardController implements ExceptionProcessor {
     private final BoardConfigSaveService configSaveService;
     private final BoardConfigInfoService configInfoService;
     private final BoardConfigValidator configValidator;
+    private final BoardConfigDeleteService configDeleteService;
 
     //주메뉴 코드
     @ModelAttribute("menuCode")
@@ -72,6 +74,8 @@ public class BoardController implements ExceptionProcessor {
     //목록삭제
     public String deleteList(@RequestParam("chk") List<Integer> chks, Model model){
         commonProcess("list", model);
+
+        configDeleteService.deleteList(chks);
 
         return "common/_execute_script";
     }

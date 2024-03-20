@@ -11,7 +11,9 @@ import org.springframework.validation.Validator;
 @Component
 @RequiredArgsConstructor
 public class BoardFormValidator implements Validator, PasswordValidator {
-    private final MemberUtil memberUtil; //권한 체크
+
+    private final MemberUtil memberUtil; //비회원 체크
+
     @Override
     public boolean supports(Class<?> clazz) {
         //검증 대상 지정
@@ -22,7 +24,7 @@ public class BoardFormValidator implements Validator, PasswordValidator {
     public void validate(Object target, Errors errors) {
         //검증에 필요한거 커맨드 객체 가져오기
         RequestBoard form = (RequestBoard) target;
-
+        String guestPw = form.getGuestPw();
         /**
          * 1. 비회원 비밀번호 -
          *  - 필수여부
@@ -30,23 +32,21 @@ public class BoardFormValidator implements Validator, PasswordValidator {
          *  - 알파벳 + 숫자 비밀번호 복잡성 체크
          */
 
-        String guestPw = form.getGuestPw();
-        if (!memberUtil.isLogin()) {
+        if (!memberUtil.isLogin()) { //로그인이 안되어있고
 
-            if (!StringUtils.hasText(guestPw)) { //guestPw 없을때
+            //guestPw 없을때
+            if (!StringUtils.hasText(guestPw)) {
                 errors.rejectValue("guestPw", "NotBlank");
-                // 비밀번호 필수 처리
-            } else if (StringUtils.hasText(guestPw) && //비밀번호 입력됐고
-                    (guestPw.length() < 6) && //6자 이하
-                    (!alphaCheck(guestPw, true) || !numberCheck(guestPw))) {
-                // 비밀번호 복잡성 실패 처리
-                errors.rejectValue("guestPw", "complexity");
             }
-
-
+            // 비밀번호 필수 처리
+            if (StringUtils.hasText(guestPw) && guestPw.length() < 6) { //guestPw값이있는데 6자 이하
+                errors.rejectValue("guestPw", "Size");
+            }
+            // 비밀번호 복잡성 실패 처리
+            if (StringUtils.hasText(guestPw) //값이 있는데 알파벳 + 숫자 복잡성 체크가 안되어있을때
+                    && (!alphaCheck(guestPw, true) || !numberCheck(guestPw))) {
+                errors.rejectValue("guestPw", "Complexity");
+            }
         }
-
-
-
     }
 }

@@ -27,6 +27,7 @@ public class BoardConfigValidator implements Validator {
 
         //게시판 아이디 하나 가져와서
         String bid = form.getBid();
+        String gid = form.getGid();
         //게시판 아디는 기본키로
         // 중복되면안되고 추가될때만 필요함
         //수정할때는 필요없으니까 add모드일때만 중복체크
@@ -37,5 +38,4 @@ public class BoardConfigValidator implements Validator {
         }
 
     }
-
 }

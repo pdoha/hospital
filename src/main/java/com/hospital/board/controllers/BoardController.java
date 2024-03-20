@@ -1,6 +1,9 @@
 package com.hospital.board.controllers;
 
 import com.hospital.board.entities.Board;
+import com.hospital.board.entities.BoardData;
+import com.hospital.board.service.BoardAuthService;
+import com.hospital.board.service.GuestPasswordCheckException;
 import com.hospital.board.service.config.BoardConfigInfoService;
 import com.hospital.commons.ExceptionProcessor;
 import com.hospital.commons.Utils;
@@ -8,6 +11,8 @@ import com.hospital.file.entities.FileInfo;
 import com.hospital.file.service.FileInfoService;
 import com.hospital.member.MemberUtil;
 import com.hospital.member.entities.Member;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -24,13 +29,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController implements ExceptionProcessor {
     private final BoardConfigInfoService configInfoService;
-    private final Utils utils;
-    private final MemberUtil memberUtil;
-    private Board board;
+    private final FileInfoService fileInfoService;
 
-    private final FileInfoService  fileInfoService;
     private final BoardFormValidator boardFormValidator;
+//    private final BoardSaveService boardSaveService;
+//    private final BoardInfoService boardInfoService;
+//    private final BoardDeleteService boardDeleteService;
+    private final BoardAuthService boardAuthService;
 
+    private final MemberUtil memberUtil;
+    private final Utils utils;
+
+    private Board board; // 게시판 설정
+    private BoardData boardData; // 게시글
     //게시판 목록
     @GetMapping("/list/{bid}")
     public String list(@PathVariable("bid") String bid, Model model){
@@ -54,10 +65,10 @@ public class BoardController implements ExceptionProcessor {
     public String write(@PathVariable("bid") String bid,@ModelAttribute RequestBoard form,  Model model){
         commonProcess(bid, "write", model);
 
-        //작성시 비회원이면
+        //게시판 작성시 회원일 경우 작성자에 회원명 자동기입
         if(memberUtil.isLogin()){
             Member member = memberUtil.getMember();
-            form.setPoster(member.getName()); //작성자랑 회원이랑 일치하면
+            form.setPoster(member.getName());
         }
 
         return utils.tpl("board/write");
@@ -75,16 +86,23 @@ public class BoardController implements ExceptionProcessor {
     @PostMapping("/save")
     public String save(@Valid RequestBoard form, Errors errors, Model model){
 
-        BoardFormValidator.validator(form, errors);
+        String bid = form.getBid();
+        String mode = form.getMode();
+        commonProcess(bid, mode, model);
 
-        //에러가 있으면
-        if(errors.hasErrors()){
+        boardFormValidator.validate(form, errors); //비회원 비밀번호 검증
+
+        //에러발생해도 파일,이미지 목록 유지
+        if (errors.hasErrors()) {
             String gid = form.getGid();
 
             List<FileInfo> editorFiles = fileInfoService.getList(gid, "editor");
             List<FileInfo> attachFiles = fileInfoService.getList(gid, "attach");
 
+            form.setEditorFiles(editorFiles);
+            form.setAttachFiles(attachFiles);
 
+            return utils.tpl("board/" + mode);
         }
 
         return null;
@@ -95,6 +113,21 @@ public class BoardController implements ExceptionProcessor {
     public String passwordCheck(@RequestParam(name="password", required = false) String password, Model model){
 
         return "common/_execute_script";
+    }
+
+
+    //비회원 비밀번호 체크 접근 권한
+    @Override
+    @ExceptionHandler(Exception.class)
+    public String errorHandler(Exception e, HttpServletResponse response, HttpServletRequest request, Model model) {
+
+        if (e instanceof GuestPasswordCheckException) { //비회원 비밀번호랑 에러객체 e 가 동일하면
+
+            return utils.tpl("board/password");
+        }
+
+        //동일하지않으면
+        return ExceptionProcessor.super.errorHandler(e, response, request, model);
     }
 
 

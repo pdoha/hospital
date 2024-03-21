@@ -122,11 +122,11 @@ public class BoardController implements ExceptionProcessor {
     public String errorHandler(Exception e, HttpServletResponse response, HttpServletRequest request, Model model) {
 
         if (e instanceof GuestPasswordCheckException) { //비회원 비밀번호랑 에러객체 e 가 동일하면
-
+            //던져진 예외가 GuestPasswordCheckException 이면 템플릿을 보여준다
             return utils.tpl("board/password");
         }
 
-        //동일하지않으면
+        //동일하지않으면 원래 처리
         return ExceptionProcessor.super.errorHandler(e, response, request, model);
     }
 

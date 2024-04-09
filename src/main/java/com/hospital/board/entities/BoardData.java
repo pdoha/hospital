@@ -34,6 +34,10 @@ public class BoardData extends Base {
     @Column(length = 65, nullable = false)
     private String gid = UUID.randomUUID().toString();
 
+    //카테고리
+    @Column(length = 60)
+    private String category; //분류
+
     @Column(length = 40, nullable = false)
     private String poster; //작성자
 
@@ -54,9 +58,9 @@ public class BoardData extends Base {
 
     private String ua; //User-Agent : 브라우저 정보
 
-    private int num1; //추가필드 : 정수
-    private int num2; //추가필드 : 정수
-    private int num3; //추가필드 : 정수
+    private Long num1; //추가필드 : 정수
+    private Long num2; //추가필드 : 정수
+    private Long num3; //추가필드 : 정수
 
     @Column(length = 100)
     private String text1; //추가필드 : 한줄 텍스트

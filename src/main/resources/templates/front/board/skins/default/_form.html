@@ -8,6 +8,12 @@
     <div class="error global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
     <!--카테고리 설정이 되어 있으면 노출 되는 조건 -->
     <dl th:if="${!#strings.isEmpty(board.category)}">
+        <!--status : 순번 -->
+        <th:block th:each= " c, status : ${board.category}">
+            <input type="radio" name="category" th:value="${c}" th:id="${'category_' +
+            status.index}" th:field="*{category}">
+            <label th:for="${'category_' + status.index}" th:text="${c}"></label>
+        </th:block>
 
     </dl>
 

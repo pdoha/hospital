@@ -42,7 +42,7 @@ function callbackFileUpload(files){
     for(const file of files){
         const location = file.location;
         let html = location == 'editor' ? editorTpl : attachTpl;
-        const targetEl = location == 'edotor' ? editorFiles : attachFiles;
+        const targetEl = location == 'editor' ? editorFiles : attachFiles;
 
         if(location == 'editor'){
             imageUrls.push(file.fileUrl); //이미지 전체 한꺼번에 추가

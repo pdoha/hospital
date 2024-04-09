@@ -3,6 +3,7 @@ package com.hospital.board.controllers;
 import com.hospital.board.entities.Board;
 import com.hospital.board.entities.BoardData;
 import com.hospital.board.service.BoardAuthService;
+import com.hospital.board.service.BoardSaveService;
 import com.hospital.board.service.GuestPasswordCheckException;
 import com.hospital.board.service.config.BoardConfigInfoService;
 import com.hospital.commons.ExceptionProcessor;
@@ -32,7 +33,7 @@ public class BoardController implements ExceptionProcessor {
     private final FileInfoService fileInfoService;
 
     private final BoardFormValidator boardFormValidator;
-//    private final BoardSaveService boardSaveService;
+    private final BoardSaveService boardSaveService;
 //    private final BoardInfoService boardInfoService;
 //    private final BoardDeleteService boardDeleteService;
     private final BoardAuthService boardAuthService;
@@ -105,7 +106,15 @@ public class BoardController implements ExceptionProcessor {
             return utils.tpl("board/" + mode);
         }
 
-        return null;
+        //게시글 저장 처리
+        BoardData boardData = boardSaveService.save(form);
+
+        String redirectURL = "redirect:/board/";
+        //글작성 후 상세보기 , 목록으로 이동 설정
+        redirectURL += board.getLocationAfterWriting().equals("view") ?
+                "view/" + boardData.getSeq() : "list/" + form.getBid();
+
+        return redirectURL;
     }
 
     //비회원 글수정, 글삭제 비밀번호 확인

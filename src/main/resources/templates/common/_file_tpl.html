@@ -19,7 +19,6 @@
     <span class="file_tpl_box" id="file_[seq]"> 
         <!--파일명을 클릭하면 다운-->
         <a th:href="@{/file/download/[seq]}">[fileName]</a>
-         <i class="xi-upload insert_image" data-url="[imageUrl]"></i>
         <!--삭제버튼-->
         <a th:href="@{/file/delete/[seq]}" onclick="return confirm('정말 삭제하시겠습니까?');"
            class="remove" target="ifrmProcess">

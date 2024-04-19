@@ -1,6 +1,7 @@
 package com.hospital.board.entities;
 
 import com.hospital.commons.entities.Base;
+import com.hospital.file.entities.FileInfo;
 import com.hospital.member.entities.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -79,5 +81,10 @@ public class BoardData extends Base {
 
     @Lob
     private String longText3; //추가필드 : 여러줄 텍스트
+
+    @Transient
+    private List<FileInfo> editorFiles; //에디터 첨부파일
+    @Transient
+    private List<FileInfo> attachFiles; //첨부파일
 
 }

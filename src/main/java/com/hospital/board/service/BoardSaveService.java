@@ -71,6 +71,7 @@ public class BoardSaveService {
             data.setNotice(form.isNotice());
         }
 
+        //저장 처리
         boardDataRepository.saveAndFlush(data);
 
         //파일 업로드 완료 처리

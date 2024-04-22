@@ -3,6 +3,7 @@ package com.hospital.board.controllers;
 import com.hospital.board.entities.Board;
 import com.hospital.board.entities.BoardData;
 import com.hospital.board.service.BoardAuthService;
+import com.hospital.board.service.BoardInfoService;
 import com.hospital.board.service.BoardSaveService;
 import com.hospital.board.service.GuestPasswordCheckException;
 import com.hospital.board.service.config.BoardConfigInfoService;
@@ -34,13 +35,12 @@ public class BoardController implements ExceptionProcessor {
 
     private final BoardFormValidator boardFormValidator;
     private final BoardSaveService boardSaveService;
-//    private final BoardInfoService boardInfoService;
+    private final BoardInfoService boardInfoService;
 //    private final BoardDeleteService boardDeleteService;
     private final BoardAuthService boardAuthService;
 
     private final MemberUtil memberUtil;
     private final Utils utils;
-
     private Board board; // 게시판 설정
     private BoardData boardData; // 게시글
     //게시판 목록
@@ -198,7 +198,15 @@ public class BoardController implements ExceptionProcessor {
 
     }
 
+    //게시글 번호 seq로 게시글 조회, 수정
     private void commonProcess(Long seq, String mode, Model model){
+        boardData = boardInfoService.get(seq);
+
+        //게시글 설정은 bid만 넣어주고 위에 만들었던 commonprocess로 처리
+        String bid = boardData.getBoard().getBid();
+        commonProcess(bid, mode, model);
+
+        model.addAttribute("boardData", boardData);
 
     }
 

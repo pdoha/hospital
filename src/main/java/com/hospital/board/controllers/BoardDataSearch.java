@@ -18,5 +18,6 @@ public class BoardDataSearch {
     private String sopt; //검색 옵션
     private String skey; //검색 키워드
 
-    private List<String> bid; //게시판 ID
+    private List<String> bid; //게시판 ID (키워드 조회시 bid 없는 경우도 있으니까 추가)
+    private String userId;
 }

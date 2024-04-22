@@ -11,7 +11,7 @@
         <dt th:text="#{분류}"></dt>
         <dd>
             <!--status : 순번 -->
-            <th:block th:each= " c, status : ${board.category}">
+            <th:block th:each= " c, status : ${board.categories}">
                 <input type="radio" name="category" th:value="${c}" th:id="${'category_' +
                 status.index}" th:field="*{category}">
                 <label th:for="${'category_' + status.index}" th:text="${c}"></label>

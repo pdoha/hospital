@@ -80,6 +80,10 @@ public class BoardController implements ExceptionProcessor {
     public String update(@PathVariable("seq") Long seq, Model model){
         commonProcess(seq, "update", model);
 
+        //RequestBoard -> BoardData로 변환해주는 메서드 getForm
+        RequestBoard form = boardInfoService.getForm(boardData);
+        model.addAttribute("requestBoard", form);
+
         return utils.tpl("board/update");
     }
 
@@ -186,6 +190,9 @@ public class BoardController implements ExceptionProcessor {
             pageTitle += mode.equals("update") ? Utils.getMessage("글수정",
                     "commons") : Utils.getMessage("글쓰기", "commons");
 
+        } else if (model.equals("view")){
+            //pageTitle - 글제목 - 게시판 명
+            pageTitle = String.format("%s | %s", boardData.getSubject(), board.getBName());
         }
 
         //스킨에 따라 css , script 분리

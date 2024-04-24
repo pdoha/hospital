@@ -1,6 +1,7 @@
 package com.hospital.board.service;
 
 import com.hospital.board.controllers.BoardDataSearch;
+import com.hospital.board.controllers.RequestBoard;
 import com.hospital.board.entities.Board;
 import com.hospital.board.entities.BoardData;
 import com.hospital.board.entities.QBoardData;
@@ -20,6 +21,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -43,6 +45,24 @@ public class BoardInfoService {
         //에디터이미지, 첨부파일
         addBoardData(boardData);
         return boardData;
+    }
+
+    // RequestBoard -> BoardData 로 변환 작업
+    //파라미터는 게시글 번호(Long) 또는 게시글 데이터 (BoardData) 가 될 수 있음 -> object 사용
+    public RequestBoard getForm(Object data){
+        BoardData boardData = null;
+        if(data instanceof BoardData){
+            boardData = (BoardData) data;
+        } else { //게시글 번호인 경우
+            Long seq = (Long) data;
+            boardData = get(seq);
+        }
+
+        RequestBoard form = new ModelMapper().map(boardData, RequestBoard.class);
+        form.setMode("update");
+        form.setBid(boardData.getBoard().getBid());
+
+        return form;
     }
 
     //게시판 목록 조회
@@ -100,6 +120,12 @@ public class BoardInfoService {
             andBuilder.and(boardData.member.userId.eq(userId));
         }
 
+        //게시글 분류로 조회
+        String category = search.getCategory();
+        if(StringUtils.hasText(category)){
+            category = category.trim(); //양옆 좌우 여백 제거
+            andBuilder.and(boardData.category.eq(category));
+        }
 
         PathBuilder<BoardData> pathBuilder = new PathBuilder<>(BoardData.class, "boardData");
 

@@ -1,6 +1,69 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<th:block th:fragment="default">
+<th:block th:fragment="default" th:object="${boardData}">
+    <div class="board_view layout_width">
+
+
+        <div class="subject" >
+            <!--분류-->
+            <span th:if="*{!#strings.isEmpty(category)}" class="category"
+                  th:text="*{'['+ category + ']'}"></span>
+            <!--제목-->
+            <th:block th:text="*{subject}"></th:block>
+
+        </div>
+        <!--게시글 정보-->
+        <div class="post_info">
+            <!--왼쪽 부분-->
+            <div class="left">
+                <span>
+                    <!--작성자-->
+                    <th:block th:text="#{작성자}"></th:block> :
+                    <th:block th:text="*{poster}"></th:block>
+                    <!--로그인한 회원이면 아이디까지 출력-->
+                    <th:block th:if="*{member != null}" th:text="*{'('+ member.userId +')'}"></th:block>
+                </span>
+
+                <span>
+                    <th:block th:text="#{조회수}"></th:block> :
+                    <th:block th:text="*{viewCount >= 1000 ? #numbers.formatInteger(viewCount, 3, 'COMMA') : viewCount}"></th:block>
+                </span>
+            </div>
+
+            <!--오른쪽 부분-->
+            <div class="right">
+                <span>
+                    <!--IP -->
+                    IP : <th:block th:text="*{ip}"></th:block>
+                </span>
+
+                <span>
+                    <!--등록일자-->
+                    <th:block th:text="#{작성일시}"></th:block> :
+                    <th:block th:text="*{#temporals.format(createdAt, 'yyyy.MM.dd HH:mm')}"></th:block>
+                </span>
+            </div>
+        </div>
+        <!--내용-->
+        <div class="content" th:utext="*{content}"></div>
+        <!-- 파일 다운로드 링크-->
+        <ul th:if="*{attachFiles != null && !attachFiles.isEmpty()}" class="downloads">
+            <li th:each="file : *{attachFiles}" th:object="${file}">
+                <i class="xi-download"></i>
+                <a th:href="@{/file/download/{seq}(seq=*{seq})}" th:text="*{fileName}"></a>
+            </li>
+        </ul>
+
+        <!--버튼-->
+        <div class="board_btns">
+            <a th:href="@{/board/write/{bid}(bid=${board.bid})}" th:text="#{글쓰기}" class="btn"></a>
+            <a th:href="@{/board/update/{seq}(seq=*{seq})}" th:text="#{글수정}" class="btn"></a>
+            <a th:href="@{/board/delete/{seq}(seq=*{seq})}" th:text="#{글삭제}" class="btn"></a>
+            <a th:if="${board.useReply}" th:href="@{/board/reply/{seq}(seq=*{seq})}" th:text="#{답글}" class="btn"></a>
+            <a th:href="@{/board/list/{bid}(bid=${board.bid})}" th:text="#{글목록}" class="btn"></a>
+        </div>
+
+    </div>
 
 </th:block>
 </html>

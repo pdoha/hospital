@@ -20,4 +20,5 @@ public class BoardDataSearch {
 
     private List<String> bid; //게시판 ID (키워드 조회시 bid 없는 경우도 있으니까 추가)
     private String userId;
+    private String category;  //게시판 분류
 }

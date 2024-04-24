@@ -1,8 +1,10 @@
 package com.hospital.board.service;
 
 import com.hospital.board.controllers.RequestBoard;
+import com.hospital.board.entities.Board;
 import com.hospital.board.entities.BoardData;
 import com.hospital.board.repositories.BoardDataRepository;
+import com.hospital.board.repositories.BoardRepository;
 import com.hospital.file.service.FileUploadService;
 import com.hospital.member.MemberUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +16,8 @@ import org.springframework.util.StringUtils;
 @Service
 @RequiredArgsConstructor
 public class BoardSaveService {
+
+    private final BoardRepository boardRepository;
     private final BoardDataRepository boardDataRepository;
     private final FileUploadService fileUploadService;
     private final MemberUtil memberUtil; //로그인한 사용자 정보
@@ -37,6 +41,10 @@ public class BoardSaveService {
             data.setIp(request.getRemoteAddr());
             data.setUa(request.getHeader("User-Agent"));
             data.setMember(memberUtil.getMember());
+
+            //처음 글 추가할때 게시판 하나 가져와서 추가
+            Board board = boardRepository.findById(form.getBid()).orElse(null);
+            data.setBoard(board);
         }
         //수정 & 삭제시 필요한 데이터
         data.setPoster(form.getPoster());

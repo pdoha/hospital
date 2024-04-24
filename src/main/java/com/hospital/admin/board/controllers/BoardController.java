@@ -142,8 +142,6 @@ public class BoardController implements ExceptionProcessor {
         }
 
         //공통
-
-        List<String> addCss = new ArrayList<>();
         //양식에 필요한 스크립트 ( 게시판 등록, 수정에 다 필요하니까 form)
         List<String> addScript = new ArrayList<>();
 
@@ -162,7 +160,7 @@ public class BoardController implements ExceptionProcessor {
         model.addAttribute("subMenuCode", mode); //서브메뉴코드는 모드값과 동일하게
         model.addAttribute("addCommonScript", addCommonScript);
         model.addAttribute("addScript", addScript);
-        model.addAttribute("addCss", addCss);
+
 
     }
 }

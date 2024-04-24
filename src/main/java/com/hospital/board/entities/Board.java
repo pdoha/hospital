@@ -1,14 +1,17 @@
 package com.hospital.board.entities;
 
 import com.hospital.commons.entities.BaseMember;
+import com.hospital.file.entities.FileInfo;
 import com.hospital.member.Authority;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.hospital.file.entities.FileInfo;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -78,4 +81,22 @@ public class Board extends BaseMember {
 
     @Transient
     private List<FileInfo> htmlBottomImages; //게시판 상단 Bottom 이미지
+
+    /**
+     * 문자열 category를 메서드를 이용해서
+     * 분류 List 형태로 변환
+     *
+     * @return
+     */
+    public List<String> getCategories() {
+        List<String> categories = new ArrayList<>();
+
+        if (StringUtils.hasText(category)) {
+            categories = Arrays.stream(category.trim().split("\\n"))
+                    .map(s -> s.trim().replaceAll("\\r", ""))
+                    .toList();
+        }
+
+        return categories;
+    }
 }

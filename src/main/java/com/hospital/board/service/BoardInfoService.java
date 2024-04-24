@@ -59,7 +59,7 @@ public class BoardInfoService {
         }
 
         RequestBoard form = new ModelMapper().map(boardData, RequestBoard.class);
-        form.setMode("update");
+        form.setMode("update"); //양식을 변경하는 경우는 게시글 수정쪽에서만 !
         form.setBid(boardData.getBoard().getBid());
 
         return form;

@@ -2,16 +2,16 @@ package com.hospital.board.service;
 
 import com.hospital.board.controllers.BoardDataSearch;
 import com.hospital.board.controllers.RequestBoard;
-import com.hospital.board.entities.Board;
-import com.hospital.board.entities.BoardData;
-import com.hospital.board.entities.QBoardData;
+import com.hospital.board.entities.*;
 import com.hospital.board.repositories.BoardDataRepository;
+import com.hospital.board.repositories.BoardViewRepository;
 import com.hospital.board.service.config.BoardConfigInfoService;
 import com.hospital.commons.ListData;
 import com.hospital.commons.Pagination;
 import com.hospital.commons.Utils;
 import com.hospital.file.entities.FileInfo;
 import com.hospital.file.service.FileInfoService;
+import com.hospital.member.MemberUtil;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -31,11 +31,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardInfoService {
     private final BoardDataRepository boardDataRepository;
+    private final BoardViewRepository boardViewRepository; //조회수
     private final EntityManager em;
     private final FileInfoService fileInfoService; //파일정보
     private final BoardConfigInfoService configInfoService; //게시판 설정
     private final HttpServletRequest request;
     private final Utils utils; //장비구분
+    private final MemberUtil memberUtil;
 
     //게시글 개별 조회
     public BoardData get(Long seq){
@@ -165,5 +167,35 @@ public class BoardInfoService {
         //추가
         boardData.setEditorFiles(editorFiles);
         boardData.setAttachFiles(attachFiles);
+    }
+
+    //조회수 - 게시글 번호 seq
+    public void updateViewCount(Long seq){
+
+        //게시글 불러오기, 없는 게시글일 경우 조회수 카운팅 x
+        BoardData data = boardDataRepository.findById(seq).orElse(null);
+        if(data == null) return;
+
+        //게시글 있으면
+        //1. 조회수를 위한 데이터 추가
+        try {
+            //멤버에서 로그인상태이면 회원번호로, 아닐때는 비회원을 구분하는 uid
+            int uid = memberUtil.isLogin() ? memberUtil.getMember().getSeq().intValue() : utils.guestUid();
+            BoardView boardView = new BoardView(seq, uid);
+
+            boardViewRepository.saveAndFlush(boardView); //저장
+        } catch (Exception e){}
+
+        //2. 조회수 카운팅 -> 게시글에 업데이트
+        QBoardView bv = QBoardView.boardView;
+        int viewCount = (int)boardViewRepository.count(bv.seq.eq(seq));
+
+
+        data.setViewCount(viewCount);
+
+        boardViewRepository.flush();
+
+
+
     }
 }

@@ -162,6 +162,15 @@ public class Utils {
         return request.getParameterValues(name);
     }
 
+    //비회원을 구분할 수 있는 uid 값 ( unique Id) : IP + 브라우저 정보
+    public int guestUid(){
+        String ip = request.getRemoteAddr();
+        String ua = request.getHeader("User-Agent");
+
+        return Objects.hash(ip, ua);
+
+    }
+
 
 
 

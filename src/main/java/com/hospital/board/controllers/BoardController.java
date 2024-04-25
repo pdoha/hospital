@@ -55,7 +55,8 @@ public class BoardController implements ExceptionProcessor {
     //게시글 번호 seq
     @GetMapping("/view/{seq}")
     public String view(@PathVariable("seq") Long seq, Model model){
-        commonProcess(seq, "view", model);
+        boardInfoService.updateViewCount(seq); //조회수 업데이트
+        commonProcess(seq, "view", model); //게시글 가져오기
 
         return utils.tpl("board/view");
 
@@ -190,7 +191,7 @@ public class BoardController implements ExceptionProcessor {
             pageTitle += mode.equals("update") ? Utils.getMessage("글수정",
                     "commons") : Utils.getMessage("글쓰기", "commons");
 
-        } else if (model.equals("view")){
+        } else if (mode.equals("view")){
             //pageTitle - 글제목 - 게시판 명
             pageTitle = String.format("%s | %s", boardData.getSubject(), board.getBName());
         }

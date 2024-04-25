@@ -6,16 +6,13 @@
         <th:block sec:authorize="isAnonymous()">
            <!-- -> 회원가입 & 로그인 링크 노출-->
             <a th:href="@{/member/join}" th:text="#{회원가입}"></a>
-
             <a th:href="@{/member/login}" th:text="#{로그인}"></a>
-
         </th:block>
 
         <!--로그인 상태-->
         <th:block sec:authorize="isAuthenticated()">
             <th:block th:if="${session.member.profileImage != null}"
-                th:utext="${@utils.printThumb(session.member.profileImage.seq, 80, 80, 'profile_image')}"
-
+                      th:utext="${@utils.printThumb(session.member.profileImage.seq, 80, 80, 'profile_image')}">
             ></th:block>
             <!-- -> 마이페이지 & 로그아웃 링크 노출-->
             <!--로그인한 사용자 정보도 같이 출력 식객체 #messages의 msg 메서드 사용 -->
